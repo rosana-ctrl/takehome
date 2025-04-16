@@ -23,9 +23,9 @@ public class AccountService {
 
     public Object saveEvent(Event event) {
         return switch (event.getType()) {
-            case DEPOSIT -> handleDeposit(event);
-            case WITHDRAW -> handleWithdraw(event);
-            case TRANSFER -> handleTransfer(event);
+            case deposit -> handleDeposit(event);
+            case withdraw -> handleWithdraw(event);
+            case transfer -> handleTransfer(event);
             default -> "Unknown event type";
         };
     }
@@ -44,7 +44,7 @@ public class AccountService {
     private Object handleWithdraw(Event event){
         Account origin = accounts.get(event.getOrigin());
         if (origin == null || origin.getBalance() < event.getAmount()) {
-            return "Insufficient funds or account not found";
+            return null;
         }
         origin.withdraw(event.getAmount());
         return Map.of(
@@ -56,7 +56,27 @@ public class AccountService {
     }
 
     private Object handleTransfer(Event event){
-        return false; //todo: implement it...
+        Account origin = accounts.get(event.getOrigin());
+        if (origin == null || origin.getBalance() < event.getAmount()){
+            return  null;
+        }
+        Account destination = accounts.computeIfAbsent(event.getDestination(), Account::new);
+        origin.withdraw(event.getAmount());
+        destination.deposit(event.getAmount());
+        return Map.of(
+                "origin", Map.of(
+                        "id", origin.getId(),
+                        "balance", origin.getBalance()
+                ),
+                "destination", Map.of(
+                        "id", destination.getId(),
+                        "balance", destination.getBalance()
+                )
+        );
+    }
+
+    public void reset() {
+        accounts.clear();
     }
 
 }

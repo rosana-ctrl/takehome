@@ -43,8 +43,8 @@ public class Event {
     }
 
     public enum EventType {
-        DEPOSIT,
-        WITHDRAW,
-        TRANSFER
+        deposit,
+        withdraw,
+        transfer
     }
 }
