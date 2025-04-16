@@ -42,11 +42,21 @@ public class AccountService {
     }
 
     private Object handleWithdraw(Event event){
-        return false;
+        Account origin = accounts.get(event.getOrigin());
+        if (origin == null || origin.getBalance() < event.getAmount()) {
+            return "Insufficient funds or account not found";
+        }
+        origin.withdraw(event.getAmount());
+        return Map.of(
+                "origin", Map.of(
+                        "id", origin.getId(),
+                        "balance", origin.getBalance()
+                )
+        );
     }
 
     private Object handleTransfer(Event event){
-        return false;
+        return false; //todo: implement it...
     }
 
 }

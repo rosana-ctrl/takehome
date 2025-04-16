@@ -23,7 +23,7 @@ public class EventController {
     public ResponseEntity<Object> createEvent(@RequestBody Event event){
         Object result = accountService.saveEvent(event);
 
-        if (result == null){
+        if (result instanceof String){
             return ResponseEntity.status(404).body(0);
         }
 
