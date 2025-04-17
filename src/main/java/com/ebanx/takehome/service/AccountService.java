@@ -56,6 +56,11 @@ public class AccountService {
     }
 
     private Object handleTransfer(Event event){
+
+        if (event.getAmount() == null || event.getAmount() <= 0 ){
+            return null;
+        }
+
         Account origin = accounts.get(event.getOrigin());
         if (origin == null || origin.getBalance() < event.getAmount()){
             return  null;

@@ -21,6 +21,10 @@ public class EventController {
 
     @PostMapping("")
     public ResponseEntity<Object> createEvent(@RequestBody Event event){
+
+        if (event.getAmount() == null || event.getAmount() <= 0){
+            return ResponseEntity.status(400).body("Invalid amount");
+        }
         Object result = accountService.saveEvent(event);
 
         if (result ==null){
