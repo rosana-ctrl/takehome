@@ -3,7 +3,6 @@ package com.ebanx.takehome.service;
 import com.ebanx.takehome.model.Account;
 import com.ebanx.takehome.model.Event;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -16,7 +15,7 @@ public class AccountService {
 
     public Integer getBalance(String accountId) {
         Account account = accounts.get(accountId);
-        if (account != null){
+        if (account != null) {
             return account.getBalance();
         }
         return null;
@@ -31,7 +30,7 @@ public class AccountService {
         };
     }
 
-    private Map<String, Object> handleDeposit(Event event){
+    private Map<String, Object> handleDeposit(Event event) {
         Account destination = accounts.computeIfAbsent(event.getDestination(), Account::new);
         destination.deposit(event.getAmount());
         return Map.of(
@@ -42,7 +41,7 @@ public class AccountService {
         );
     }
 
-    private Object handleWithdraw(Event event){
+    private Object handleWithdraw(Event event) {
         Account origin = accounts.get(event.getOrigin());
 
         if (origin == null || origin.getBalance() < event.getAmount()) {
@@ -64,11 +63,11 @@ public class AccountService {
 
     }
 
-    private Object handleTransfer(Event event){
+    private Object handleTransfer(Event event) {
         Account origin = accounts.get(event.getOrigin());
 
-        if (origin == null || origin.getBalance() < event.getAmount()){
-            return  null;
+        if (origin == null || origin.getBalance() < event.getAmount()) {
+            return null;
         }
 
         Account destination = accounts.computeIfAbsent(event.getDestination(), Account::new);
@@ -89,16 +88,11 @@ public class AccountService {
                             "balance", destination.getBalance()
                     )
             );
-
-            // faz o withdraw
-            // seta uma variavel indicando que o draw foi feito. withdrawFinished = true
-            // faz o deposit
         } catch (Exception exception) {
             if (withdrawFinished) {
                 origin.deposit(event.getAmount());
             }
             return null;
-            //se withdrawFinished = true, desfaz o deposit, fazendo um origin.deposit(event.getAmount())
         }
     }
 

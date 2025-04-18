@@ -15,12 +15,12 @@ public class BalanceController {
 
     private final AccountService accountService;
 
-    public BalanceController(AccountService accountService){
+    public BalanceController(AccountService accountService) {
         this.accountService = accountService;
     }
 
     @GetMapping("")
-    public ResponseEntity<Object> getBalance(@RequestParam("account_id") String accountId){
+    public ResponseEntity<Object> getBalance(@RequestParam("account_id") String accountId) {
         try {
             EventValidator.validateAccountId(accountId);
         } catch (Exception e) {
@@ -29,7 +29,7 @@ public class BalanceController {
 
         Integer balance = accountService.getBalance(accountId);
 
-        if (balance == null){
+        if (balance == null) {
             return ResponseEntity.status(404).body(0);
         }
 

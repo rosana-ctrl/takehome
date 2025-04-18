@@ -1,6 +1,7 @@
 package com.ebanx.takehome.validator;
 
 import com.ebanx.takehome.model.Event;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -58,7 +59,7 @@ public class EventValidator {
             validateAccountId(event.getDestination());
             validateAmount(event.getAmount());
             if (event.getOrigin().equals(event.getDestination())) {
-                throw new Exception();
+                throw new Exception("invalid destination");
             }
             return true;
         } catch (Exception e) {

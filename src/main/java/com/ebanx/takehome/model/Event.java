@@ -7,7 +7,8 @@ public class Event {
     private String destination;
     private Integer amount;
 
-    public Event() {}
+    public Event() {
+    }
 
     // Getters e Setters
     public EventType getType() {

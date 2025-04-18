@@ -7,7 +7,6 @@ import com.ebanx.takehome.validator.EventValidator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,12 +16,12 @@ public class EventController {
 
     private final AccountService accountService;
 
-    public EventController(AccountService accountService){
+    public EventController(AccountService accountService) {
         this.accountService = accountService;
     }
 
     @PostMapping("")
-    public ResponseEntity<Object> createEvent(@RequestBody Event event){
+    public ResponseEntity<Object> createEvent(@RequestBody Event event) {
         if (!EventValidator.validate(event)) {
             return ResponseEntity.status(400).body("invalid params");
         }

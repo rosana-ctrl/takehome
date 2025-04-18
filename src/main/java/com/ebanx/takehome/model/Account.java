@@ -10,7 +10,7 @@ public class Account {
         this.balance = 0;
     }
 
-    public String getId(){
+    public String getId() {
         return id;
     }
 
