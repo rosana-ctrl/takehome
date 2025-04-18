@@ -2,10 +2,12 @@ package com.ebanx.takehome.web.controller;
 
 import com.ebanx.takehome.model.Event;
 import com.ebanx.takehome.service.AccountService;
+import com.ebanx.takehome.validator.EventValidator;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,16 +23,18 @@ public class EventController {
 
     @PostMapping("")
     public ResponseEntity<Object> createEvent(@RequestBody Event event){
-
-        if (event.getAmount() == null || event.getAmount() <= 0){
-            return ResponseEntity.status(400).body("Invalid amount");
+        if (!EventValidator.validate(event)) {
+            return ResponseEntity.status(400).body("invalid params");
         }
-        Object result = accountService.saveEvent(event);
 
-        if (result ==null){
+        try {
+            Object result = accountService.saveEvent(event);
+            if (result == null) {
+                throw new Exception();
+            }
+            return ResponseEntity.status(201).body(result);
+        } catch (Exception exception) {
             return ResponseEntity.status(404).body(0);
         }
-
-        return ResponseEntity.status(201).body(result);
     }
 }

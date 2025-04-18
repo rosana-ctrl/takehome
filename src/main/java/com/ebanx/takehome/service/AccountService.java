@@ -3,6 +3,7 @@ package com.ebanx.takehome.service;
 import com.ebanx.takehome.model.Account;
 import com.ebanx.takehome.model.Event;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -43,41 +44,62 @@ public class AccountService {
 
     private Object handleWithdraw(Event event){
         Account origin = accounts.get(event.getOrigin());
+
         if (origin == null || origin.getBalance() < event.getAmount()) {
             return null;
         }
-        origin.withdraw(event.getAmount());
-        return Map.of(
-                "origin", Map.of(
-                        "id", origin.getId(),
-                        "balance", origin.getBalance()
-                )
-        );
-    }
 
-    private Object handleTransfer(Event event){
+        try {
+            origin.withdraw(event.getAmount());
+            return Map.of(
+                    "origin", Map.of(
+                            "id", origin.getId(),
+                            "balance", origin.getBalance()
+                    )
+            );
 
-        if (event.getAmount() == null || event.getAmount() <= 0 ){
+        } catch (Exception exception) {
             return null;
         }
 
+    }
+
+    private Object handleTransfer(Event event){
         Account origin = accounts.get(event.getOrigin());
+
         if (origin == null || origin.getBalance() < event.getAmount()){
             return  null;
         }
+
         Account destination = accounts.computeIfAbsent(event.getDestination(), Account::new);
-        origin.withdraw(event.getAmount());
-        destination.deposit(event.getAmount());
-        return Map.of(
-                "origin", Map.of(
-                        "id", origin.getId(),
-                        "balance", origin.getBalance()
-                ),
-                "destination", Map.of(
-                        "id", destination.getId(),
-                        "balance", destination.getBalance()
-                )
-        );
+        boolean withdrawFinished = false;
+
+        try {
+            origin.withdraw(event.getAmount());
+            withdrawFinished = true;
+            destination.deposit(event.getAmount());
+
+            return Map.of(
+                    "origin", Map.of(
+                            "id", origin.getId(),
+                            "balance", origin.getBalance()
+                    ),
+                    "destination", Map.of(
+                            "id", destination.getId(),
+                            "balance", destination.getBalance()
+                    )
+            );
+
+            // faz o withdraw
+            // seta uma variavel indicando que o draw foi feito. withdrawFinished = true
+            // faz o deposit
+        } catch (Exception exception) {
+            if (withdrawFinished) {
+                origin.deposit(event.getAmount());
+            }
+            return null;
+            //se withdrawFinished = true, desfaz o deposit, fazendo um origin.deposit(event.getAmount())
+        }
     }
 
     public void reset() {

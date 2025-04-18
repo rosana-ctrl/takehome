@@ -1,6 +1,7 @@
 package com.ebanx.takehome.web.controller;
 
 import com.ebanx.takehome.service.AccountService;
+import com.ebanx.takehome.validator.EventValidator;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,12 @@ public class BalanceController {
 
     @GetMapping("")
     public ResponseEntity<Object> getBalance(@RequestParam("account_id") String accountId){
+        try {
+            EventValidator.validateAccountId(accountId);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("invalid account_id");
+        }
+
         Integer balance = accountService.getBalance(accountId);
 
         if (balance == null){
