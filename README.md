@@ -45,20 +45,20 @@ Creates a new banking event. Supported event types:
 
 **Request JSON:**
 ```json
-{
-  "type": "deposit",
-  "destination": "100",
-  "amount": 10
-}
+   {
+      "type": "deposit",
+      "destination": "100",
+      "amount": 10
+   }
 ```
 ## Success Response (201 Created):
 ```json
-{
-  "destination": {
-    "id": "100",
-    "balance": 10
-  }
-}
+   {
+      "destination": {
+      "id": "100",
+      "balance": 10
+      }
+   }
 ```
 
 ## Error Responses:
